@@ -1,0 +1,17 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY
+    command: uv run --no-dev fastapi dev --host 0.0.0.0 src/service.py
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+        - action: rebuild
+          path: uv.lock

@@ -1,4 +1,5 @@
 setup:
 	uv sync
+	uv run lefthook install
 dev:
-	uv run fastapi dev src/service.py
+	docker compose --env-file .env.local up --remove-orphans --build
