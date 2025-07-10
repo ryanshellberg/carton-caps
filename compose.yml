@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     environment:
       - OPENAI_API_KEY
-    command: uv run --no-dev fastapi dev --host 0.0.0.0 src/service.py
+    command: uv run --no-dev uvicorn service:app --app-dir src --reload --host 0.0.0.0 --port 8000
     develop:
       watch:
         - action: sync

@@ -20,4 +20,4 @@ RUN --mount=type=cache,target=/root/.cache/uv uv sync --no-dev --frozen --compil
 # Expose the server port.
 EXPOSE 8000
 
-CMD ["uv", "run", "--no-dev", "fastapi", "run", "--host", "0.0.0.0", "src/service.py"]
+CMD ["uv", "run", "--no-dev", "uvicorn", "service:app", "--app-dir", "src", "--host", "0.0.0.0", "--port", "8000"]

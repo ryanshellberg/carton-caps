@@ -1,4 +1,13 @@
-from fastapi import FastAPI
+from datetime import datetime, timezone
+from typing import Annotated
+import uuid
+from fastapi import FastAPI, Query
+from pydantic import UUID4
+
+from request.chats.chat import Chat
+from request.messages.create_message_request import CreateMessageRequest
+from request.messages.list_messages_request import ListMessagesParams
+from request.messages.message import Message
 
 app = FastAPI()
 
@@ -6,3 +15,50 @@ app = FastAPI()
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.post("/v1/chats")
+def create_chat():
+    timestamp = datetime.now(timezone.utc).isoformat()
+    chat = Chat(id=uuid.uuid4(), is_active=True, created_at=timestamp)
+    return chat
+
+
+@app.get("/v1/chats/current")
+def current_chat():
+    timestamp = datetime.now(timezone.utc).isoformat()
+    chat = Chat(id=uuid.uuid4(), is_active=True, created_at=timestamp)
+    return chat
+
+
+@app.post("/v1/chats/{chat_id}/messages")
+def create_message(chat_id: UUID4, request: CreateMessageRequest):
+    timestamp = datetime.now(timezone.utc).isoformat()
+    message = Message(
+        id=uuid.uuid4(),
+        chat_id=chat_id,
+        created_at=timestamp,
+        is_terminal=False,
+        moderation_code=None,
+        response_citations=[],
+        response_text="Your response!",
+        user_text=request.text,
+    )
+    return message
+
+
+@app.get("/v1/chats/{chat_id}/messages")
+def list_messages(chat_id: UUID4, query_params: Annotated[ListMessagesParams, Query()]):
+    timestamp = datetime.now(timezone.utc).isoformat()
+    message = Message(
+        id=uuid.uuid4(),
+        chat_id=chat_id,
+        created_at=timestamp,
+        is_terminal=False,
+        moderation_code=None,
+        response_citations=[],
+        response_text="Your response!",
+        user_text="Some query!",
+    )
+
+    return [message]
