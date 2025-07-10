@@ -1,0 +1,15 @@
+[project]
+name = "carton-caps"
+version = "0.1.0"
+description = "Chatbot prototype for Carton Caps."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]==0.116.0",
+]
+
+[dependency-groups]
+dev = [
+    "lefthook==1.12.1",
+    "ruff==0.12.2",
+]

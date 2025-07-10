@@ -1,0 +1,13 @@
+pre-commit:
+  jobs:
+    - name: UV lock
+      glob: "{pyproject.toml,uv.lock}"
+      run: uv lock && git add uv.lock
+    - name: Lint
+      glob: "*.py"
+      run: uv run ruff check --fix {staged_files}
+      stage_fixed: true
+    - name: Format
+      run: uv run ruff format {staged_files}
+      glob: "*.py"
+      stage_fixed: true
