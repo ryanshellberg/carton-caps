@@ -1,6 +1,8 @@
 from openai import OpenAI
 
 from openai.types.chat.chat_completion import ChatCompletion
+from openai.types.create_embedding_response import CreateEmbeddingResponse
+
 
 from config import settings
 
@@ -9,7 +11,7 @@ _client = OpenAI(api_key=settings.openai_api_key)
 
 class OpenAIClient:
     @staticmethod
-    def get_embeddings(text):
+    def get_embeddings(text) -> CreateEmbeddingResponse:
         response = _client.embeddings.create(
             model=settings.openai_embedding_model, input=text
         )

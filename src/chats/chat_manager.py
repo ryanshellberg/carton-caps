@@ -10,7 +10,8 @@ Your responses should be narrowly constrained to be relevant to this purpose, an
 
 
 class ChatManager:
-    def populate_response(message: Message):
+    @staticmethod
+    def populate_response(message: Message) -> Message:
         context = ContextManager.get_context_for_response(message)
 
         context_prompt = f"""Provided below is relevant informational content found in the Carton Caps database. 
