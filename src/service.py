@@ -4,6 +4,7 @@ import uuid
 from fastapi import FastAPI, Query
 from pydantic import UUID4
 
+from chats.chat_manager import ChatManager
 from request.chats.chat import Chat
 from request.messages.create_message_request import CreateMessageRequest
 from request.messages.list_messages_request import ListMessagesParams
@@ -41,9 +42,11 @@ def create_message(chat_id: UUID4, request: CreateMessageRequest):
         is_terminal=False,
         moderation_code=None,
         response_citations=[],
-        response_text="Your response!",
         user_text=request.text,
     )
+
+    ChatManager.populate_response(message)
+
     return message
 
 
