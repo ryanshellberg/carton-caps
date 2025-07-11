@@ -11,5 +11,7 @@ class Settings(BaseSettings):
     openai_chat_model: str = "gpt-4o"
     openai_temperature: float = 0.2
 
+    database_file: str = "carton_caps.db"
+
 
 settings = Settings()

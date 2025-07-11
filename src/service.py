@@ -5,6 +5,7 @@ from fastapi import FastAPI, Query
 from pydantic import UUID4
 
 from chats.chat_manager import ChatManager
+from clients.database_client import DatabaseClient
 from request.chats.chat import Chat
 from request.messages.create_message_request import CreateMessageRequest
 from request.messages.list_messages_request import ListMessagesParams
@@ -20,8 +21,8 @@ def health():
 
 @app.post("/v1/chats")
 def create_chat():
-    timestamp = datetime.now(timezone.utc).isoformat()
-    chat = Chat(id=uuid.uuid4(), is_active=True, created_at=timestamp)
+    user_id = get_user_id()
+    chat = DatabaseClient.insert_chat(user_id=user_id)
     return chat
 
 
@@ -65,3 +66,9 @@ def list_messages(chat_id: UUID4, query_params: Annotated[ListMessagesParams, Qu
     )
 
     return [message]
+
+
+# Stubbed because of prototype limitations.
+@staticmethod
+def get_user_id():
+    return "6aafd72f-d85e-4f0f-a8f5-31d0adb311df"

@@ -8,6 +8,8 @@ services:
     environment:
       - OPENAI_API_KEY
     command: uv run --no-dev uvicorn service:app --app-dir src --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - ./carton_caps.db:/app/carton_caps.db
     develop:
       watch:
         - action: sync
