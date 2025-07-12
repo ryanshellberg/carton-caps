@@ -1,11 +1,12 @@
 from typing import List
 import pymupdf
+from openai.types.embedding import Embedding
 
 
 class KnowledgeBaseService:
     @staticmethod
     def get_matching_documents(
-        search_embedding: float, max_documents: int = 5
+        search_embeddings: List[Embedding], max_documents: int = 5
     ) -> List[str]:
         faq_content = KnowledgeBaseService.get_text_from_pdf(
             "knowledge_base/Carton Caps Referral FAQs.pdf"

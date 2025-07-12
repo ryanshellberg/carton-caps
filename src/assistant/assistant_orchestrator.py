@@ -1,4 +1,4 @@
-from chats.context_manager import ContextManager
+from assistant.context_manager import ContextManager
 from clients.openai_client import OpenAIClient
 from request.messages.message import Message
 
@@ -9,7 +9,7 @@ Your responses should be narrowly constrained to be relevant to this purpose, an
 """
 
 
-class ChatManager:
+class AssistantOrchestrator:
     @staticmethod
     def populate_response(message: Message) -> Message:
         context = ContextManager.get_context_for_response(message)

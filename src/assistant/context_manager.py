@@ -8,9 +8,9 @@ class ContextManager:
     def get_context_for_response(message: Message) -> str:
         # Get relevant information from the knowledge base.
         # Get relevant user information.
-        user_text_embedding = OpenAIClient.get_embeddings(message.user_text)
+        user_text_embeddings = OpenAIClient.get_embeddings(message.user_text)
         relevant_document_texts = KnowledgeBaseService.get_matching_documents(
-            user_text_embedding
+            user_text_embeddings
         )
         all_document_text = "\n".join(relevant_document_texts)
 

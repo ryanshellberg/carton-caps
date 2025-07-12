@@ -16,12 +16,19 @@ class ChatService:
             cursor = connection.cursor()
 
             # Set all current chats to inactive.
-            update_statement = "UPDATE Chats SET is_active=false WHERE user_id=?"
+            update_statement = """
+                UPDATE Chats 
+                SET is_active=false 
+                WHERE user_id=?
+            """
             update_data = (user_id,)
             cursor.execute(update_statement, update_data)
 
             # Insert a new chat with is_active=True
-            insert_statement = "INSERT INTO Chats(id, user_id, is_active, created_at) VALUES (?, ?, ?, ?)"
+            insert_statement = """
+                INSERT INTO Chats(id, user_id, is_active, created_at) 
+                VALUES (?, ?, ?, ?)
+            """
 
             id = uuid4()
             timestamp = datetime.now(timezone.utc).isoformat()
@@ -37,7 +44,12 @@ class ChatService:
         with sqlite3.connect(settings.database_file) as connection:
             cursor = connection.cursor()
 
-            select_statement = "SELECT id, is_active, created_at FROM Chats WHERE user_id=? AND is_active=true LIMIT 1"
+            select_statement = """
+                SELECT id, is_active, created_at 
+                FROM Chats 
+                WHERE user_id=? 
+                    AND is_active=true LIMIT 1
+            """
             select_data = (user_id,)
             response = cursor.execute(select_statement, select_data)
             row = response.fetchone()
