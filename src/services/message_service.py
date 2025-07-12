@@ -27,11 +27,16 @@ class MessageService:
                 user_text=user_text,
                 is_terminal=False,
             )
-            AssistantOrchestrator.populate_response(message)
+
+            latest_response_id = MessageService.get_latest_response_id(chat_id)
+            response_text, response_id = AssistantOrchestrator.get_response(
+                message, latest_response_id
+            )
+            message.response_text = response_text
 
             # Insert the message before getting a response.
             insert_statement = """
-                INSERT INTO Messages(id, chat_id, user_text, created_at, response_text, moderation_code, is_terminal) 
+                INSERT INTO Messages(id, chat_id, user_text, created_at, response_text, openai_response_id, is_terminal) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """
             insert_data = (
@@ -40,7 +45,7 @@ class MessageService:
                 user_text,
                 timestamp,
                 message.response_text,
-                message.moderation_code,
+                response_id,
                 message.is_terminal,
             )
             cursor.execute(insert_statement, insert_data)
@@ -54,7 +59,7 @@ class MessageService:
         sort_field: SortField,
         sort_direction: SortDirection,
         limit: int,
-        offset: int,
+        offset: int = 0,
     ) -> List[Message]:
         with sqlite3.connect(settings.database_file) as connection:
             cursor = connection.cursor()
@@ -88,3 +93,24 @@ class MessageService:
             ]
 
             return messages
+
+    @staticmethod
+    def get_latest_response_id(chat_id: uuid.UUID) -> str | None:
+        with sqlite3.connect(settings.database_file) as connection:
+            cursor = connection.cursor()
+
+            select_statement = """
+                SELECT openai_response_id
+                FROM Messages
+                WHERE chat_id=?
+                ORDER BY created_at DESC
+                LIMIT 1
+            """
+            select_data = (str(chat_id),)
+
+            response = cursor.execute(select_statement, select_data)
+            row = response.fetchone()
+            if row:
+                return row[0]
+            else:
+                return None

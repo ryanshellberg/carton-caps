@@ -34,8 +34,6 @@ def current_chat() -> Chat | None:
 
 @app.post("/v1/chats/{chat_id}/messages")
 def create_message(chat_id: UUID4, request: CreateMessageRequest) -> Message:
-    # TODO: Check if the chat_id belongs to the user.
-
     message = MessageService.create_message(chat_id, request.text)
 
     return message

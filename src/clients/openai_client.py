@@ -1,8 +1,8 @@
 from typing import List
 from openai import OpenAI
 
-from openai.types.chat.chat_completion import ChatCompletion
 from openai.types.embedding import Embedding
+from openai.types.responses import Response
 
 
 from config import settings
@@ -20,16 +20,17 @@ class OpenAIClient:
         return response.data
 
     @staticmethod
-    def invoke_model(
-        user_prompt: str, system_prompt: str | None = None
-    ) -> ChatCompletion:
-        messages = []
-        if system_prompt:
-            messages.append({"role": "system", "content": system_prompt})
-        messages.append({"role": "user", "content": user_prompt})
-        response = _client.chat.completions.create(
-            messages=messages,
+    def get_response(
+        user_prompt: str,
+        system_prompt: str | None = None,
+        previous_response_id: str | None = None,
+    ) -> Response:
+        print(previous_response_id)
+        response = _client.responses.create(
             model=settings.openai_chat_model,
             temperature=settings.openai_temperature,
+            input=user_prompt,
+            instructions=system_prompt,
+            previous_response_id=previous_response_id,
         )
         return response

@@ -6,6 +6,7 @@ from request.messages.message import Message
 
 
 def test_populate_response(mocker):
+    latest_response_id = "some-response-id"
     message = Message(
         id=uuid4(),
         chat_id=uuid4(),
@@ -20,20 +21,19 @@ def test_populate_response(mocker):
         return_value=mock_context,
     )
 
-    response_text = "mock_response"
-    # Create a mock OpenAI response structure
+    expected_response_text = "mock_response"
+    expected_response_id = "some-new-id"
     mock_openai_response = mocker.Mock()
-    mock_choice = mocker.Mock()
-    mock_message = mocker.Mock()
-    mock_message.content = response_text
-    mock_choice.message = mock_message
-    mock_openai_response.choices = [mock_choice]
+    mock_openai_response.output_text = expected_response_text
+    mock_openai_response.id = expected_response_id
 
     mocker.patch(
-        "clients.openai_client.OpenAIClient.invoke_model",
+        "clients.openai_client.OpenAIClient.get_response",
         return_value=mock_openai_response,
     )
 
-    assert message.response_text is None
-    AssistantOrchestrator.populate_response(message)
-    assert message.response_text == response_text
+    actual_response_text, actual_response_id = AssistantOrchestrator.get_response(
+        message, latest_response_id
+    )
+    assert actual_response_text == expected_response_text
+    assert actual_response_id == expected_response_id

@@ -24,6 +24,7 @@ def initialize():
         chat_id TEXT NOT NULL,
         user_text TEXT NOT NULL,
         response_text TEXT,
+        openai_response_id TEXT,
         moderation_code TEXT,
         is_terminal BOOLEAN NOT NULL,
         created_at TIMESTAMP NOT NULL,

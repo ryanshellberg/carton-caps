@@ -1,3 +1,4 @@
+from typing import Tuple
 from assistant.context_manager import ContextManager
 from clients.openai_client import OpenAIClient
 from request.messages.message import Message
@@ -11,7 +12,9 @@ Your responses should be narrowly constrained to be relevant to this purpose, an
 
 class AssistantOrchestrator:
     @staticmethod
-    def populate_response(message: Message) -> Message:
+    def get_response(
+        message: Message, latest_response_id: str | None
+    ) -> Tuple[str, str]:
         context = ContextManager.get_context_for_response(message)
 
         context_prompt = f"""Provided below is relevant informational content found in the Carton Caps database. 
@@ -23,8 +26,9 @@ Limit the scope of your response to this context. If there's no relevant informa
 Response to the following user message: {message.user_text}
 """
 
-        response = OpenAIClient.invoke_model(prompt, system_prompt=SYSTEM_PROMPT)
-
-        response_text = response.choices[0].message.content
-        message.response_text = response_text
-        return message
+        response = OpenAIClient.get_response(
+            prompt, system_prompt=SYSTEM_PROMPT, previous_response_id=latest_response_id
+        )
+        response_text = response.output_text
+        response_id = response.id
+        return response_text, response_id
