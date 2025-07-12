@@ -3,6 +3,7 @@
 ## Prototype limitations
 * This prototype uses a single hardcoded user ID, as authentication and authorization are out of scope for the project. 
 * The Knowledge Base isn't a real vector database, it just returns the full text of both PDF documents.
+* Additional user context is also mocked out. In the future information like a users school or purchase history could be included in LLM prompts to generate more helpful responses. For now we have this mocked as a fake purchase history.
 
 ## Running this project
 ### Prerequisites

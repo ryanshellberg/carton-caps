@@ -23,7 +23,6 @@ Limit the scope of your response to this context. If there's no relevant informa
 Response to the following user message: {message.user_text}
 """
 
-        print(prompt)
         response = OpenAIClient.invoke_model(prompt, system_prompt=SYSTEM_PROMPT)
 
         response_text = response.choices[0].message.content
