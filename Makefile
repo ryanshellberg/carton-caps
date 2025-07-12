@@ -4,3 +4,6 @@ setup:
 	uv run python src/scripts/initialize_db.py
 dev:
 	docker compose --env-file .env.local up --remove-orphans --build
+
+integration-test:
+	docker compose --env-file .env.local run --build --rm web uv run pytest tests/integration

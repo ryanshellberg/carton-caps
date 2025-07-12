@@ -31,7 +31,7 @@ class ChatService:
             """
 
             id = uuid4()
-            timestamp = datetime.now(timezone.utc).isoformat()
+            timestamp = datetime.now(timezone.utc)
             insert_data = (str(id), user_id, True, timestamp)
 
             cursor.execute(insert_statement, insert_data)
