@@ -5,5 +5,8 @@ setup:
 dev:
 	docker compose --env-file .env.local up --remove-orphans --build
 
+test:
+	docker compose --env-file .env.local run --build --rm web uv run pytest tests/unit
+
 integration-test:
 	docker compose --env-file .env.local run --build --rm web uv run pytest tests/integration

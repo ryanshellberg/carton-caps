@@ -5,9 +5,7 @@ from openai.types.embedding import Embedding
 
 class KnowledgeBaseService:
     @staticmethod
-    def get_matching_documents(
-        search_embeddings: List[Embedding], max_documents: int = 5
-    ) -> List[str]:
+    def get_matching_documents(search_embeddings: List[Embedding]) -> List[str]:
         faq_content = KnowledgeBaseService.get_text_from_pdf(
             "knowledge_base/Carton Caps Referral FAQs.pdf"
         )
