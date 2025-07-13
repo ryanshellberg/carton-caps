@@ -6,6 +6,8 @@ from config import settings
 
 
 def initialize():
+    """Initializes the SqLite database with the correct tables."""
+
     connection = sqlite3.connect(settings.database_file)
     cursor = connection.cursor()
 

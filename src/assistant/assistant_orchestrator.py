@@ -15,6 +15,18 @@ class AssistantOrchestrator:
     def get_response(
         message: Message, latest_response_id: str | None
     ) -> Tuple[str, str]:
+        """Generates a response for the user's message.
+
+        Combines the user's prompt with relevant contextual information before calling the LLM.
+
+        Args:
+            message: The Message containing the user's prompt.
+            latest_response_id: The response ID of the latest OpenAI response in the Chat. Passed through to OpenAIClient to maintain conversation context.
+
+        Returns:
+            A tuple containing the response text and the response ID from OpenAI.
+        """
+
         context = ContextManager.get_context_for_response(message)
 
         context_prompt = f"""Provided below is relevant informational content found in the Carton Caps database. 

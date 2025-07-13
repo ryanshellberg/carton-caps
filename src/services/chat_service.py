@@ -9,9 +9,19 @@ DATABASE_FILE = settings.database_file
 
 
 class ChatService:
-    # Automatically sets any currently active chats to inactive.
     @staticmethod
-    def insert_chat(user_id) -> Chat:
+    def insert_chat(user_id: str) -> Chat:
+        """Creates a new Chat for the user and sets previous chats to inactive.
+
+        User's can only have a single Chat with is_active=True.
+        This updates that value for any existing chats before creating a new one.
+
+        Args:
+            user_id: The ID of the user to create a chat for.
+
+        Returns:
+            The created Chat.
+        """
         with sqlite3.connect(settings.database_file) as connection:
             cursor = connection.cursor()
 
@@ -41,6 +51,16 @@ class ChatService:
 
     @staticmethod
     def get_current_chat(user_id) -> Chat | None:
+        """Get's the current Chat for the user (if it exists)
+
+        The current Chat is defined as the Chat with is_active=True.
+
+        Args:
+            user_id: The ID of the user to get the current Chat for.
+
+        Returns:
+            The current Chat for the user, or None if they don't have one.
+        """
         with sqlite3.connect(settings.database_file) as connection:
             cursor = connection.cursor()
 
@@ -55,8 +75,6 @@ class ChatService:
             row = response.fetchone()
 
             if row:
-                return Chat(
-                    id=row[0], is_active=row[1], created_at=row[2], user_id=user_id
-                )
+                return Chat(id=row[0], is_active=row[1], created_at=row[2])
             else:
                 return None

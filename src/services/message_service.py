@@ -15,6 +15,17 @@ DATABASE_FILE = settings.database_file
 class MessageService:
     @staticmethod
     def create_message(chat_id: uuid.UUID, user_text: str) -> Message:
+        """Get's the response for a user's query and persists the entire Message in the database.
+
+        Before getting a response, finds the latest response ID for the Chat to maintain conversation context.
+
+        Args:
+            chat_id: The id of the Chat to create the message
+            user_text: The user's query.
+
+        Returns:
+            The created Message with the response populated.
+        """
         with sqlite3.connect(settings.database_file) as connection:
             cursor = connection.cursor()
 
@@ -28,13 +39,13 @@ class MessageService:
                 is_terminal=False,
             )
 
+            # Get the latest response ID from the Chat to maintain conversation context.
             latest_response_id = MessageService.get_latest_response_id(chat_id)
             response_text, response_id = AssistantOrchestrator.get_response(
                 message, latest_response_id
             )
             message.response_text = response_text
 
-            # Insert the message before getting a response.
             insert_statement = """
                 INSERT INTO Messages(id, chat_id, user_text, created_at, response_text, openai_response_id, is_terminal) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -61,6 +72,19 @@ class MessageService:
         limit: int,
         offset: int = 0,
     ) -> List[Message]:
+        """Get's messages from a specific Chat.
+
+        Args:
+            chat_id: The id of the Chat to get messages from.
+            sort_field: What field to sort on.
+            sort_direction: What direction to sort.
+            limit: The maximum number of Messages to get.
+            offset: When paginating, the row to start counting from.
+
+        Returns:
+            A list of Messages.
+        """
+
         with sqlite3.connect(settings.database_file) as connection:
             cursor = connection.cursor()
 
@@ -96,6 +120,14 @@ class MessageService:
 
     @staticmethod
     def get_latest_response_id(chat_id: uuid.UUID) -> str | None:
+        """Gets the openai_response_id of the latest Message in a chat (based on created_at timestamp).
+
+        Args:
+            chat_id: The id of the Chat to get the latest response ID from.
+
+        Returns:
+            The openai_response_id of the latest message in the Chat, or None if none was present.
+        """
         with sqlite3.connect(settings.database_file) as connection:
             cursor = connection.cursor()
 
